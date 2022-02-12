@@ -1,0 +1,10 @@
+config:
+  gcloud:bor:
+    chainStorage: 200Gi
+    genesisURI: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/bor/genesis.json
+    image: maticnetwork/bor:v0.2.14
+  gcloud:k8s:
+    initialNodeCount: 2
+    machineType: n1-standard-2
+  gcp:project: patternbookdemo
+  gcp:zone: europe-west1-b

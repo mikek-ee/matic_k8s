@@ -1,0 +1,10 @@
+{
+  "webBucket": false,
+  "singleton": false,
+  "scaleGroup": false,
+
+  "k8s": true,
+  "k8s-nginx": false,
+  "k8s-guestbook": false,
+  "k8s-bor": true
+}
