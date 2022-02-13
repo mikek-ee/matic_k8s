@@ -3,7 +3,6 @@ const pulumi = require("@pulumi/pulumi")
 
 const storage = require("../resources/storage")
 const service = require("../resources/service");
-const { PersistentVolumeClaim } = require("@pulumi/kubernetes/core/v1");
 
 // Required config:
 // bor.chainStorage: Size of persistant storage disk (e.g. "200Gi")
