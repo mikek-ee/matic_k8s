@@ -4,7 +4,6 @@
     "dependencies": {
         "@pulumi/gcp": "^6.10.0",
         "@pulumi/kubernetes": "^3.15.1",
-        "@pulumi/pulumi": "^3.24.1",
-        "flipit": "^2.0.3"
+        "@pulumi/pulumi": "^3.24.1"
     }
 }
