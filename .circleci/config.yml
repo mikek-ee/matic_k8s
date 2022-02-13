@@ -13,7 +13,6 @@ jobs:
       - checkout
       - pulumi/login:
           version: 3.24.1
-          access-token: '${OTHER_ACCESS_TOKEN}'
       - pulumi/update:
           stack: Mikek_ee/gcloud/dev      
  
