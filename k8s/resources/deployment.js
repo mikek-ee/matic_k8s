@@ -1,9 +1,13 @@
 const k8s = require("@pulumi/kubernetes");
 
+// Note: replicas > 1 & persistent storage are currently mutually exclusive
+
 const createDeployment = ({
     name,
     metadata,
-    config: { matchLabels },
+    config: {
+        replicas, matchLabels, storageNeeds,
+        image, shellCmd, publicPorts },
     provider }) => {
 
     const deployment = new k8s.apps.v1.Deployment(
@@ -11,45 +15,35 @@ const createDeployment = ({
         {
             metadata,
             spec: {
-                replicas: 1,
-                selector: { matchLabels: appLabels },
+                replicas,
+                selector: { matchLabels },
                 template: {
                     metadata,
                     spec: {
-                        volumes: [
-                            {
-                                name: "bor-datadir",
-                                persistentVolumeClaim: {
-                                    claimName: pvClaim.metadata.apply(m => m.name)
-                                }
+                        volumes: storageNeeds.map(s => ({
+                            name: s.name,
+                            persistentVolumeClaim: {
+                                claimName: s.pvClaim.metadata.apply(m => m.name)
                             }
-                        ],
+                        })),
+
                         containers: [
                             {
                                 name: name,
-                                image: cfg.image,
+                                image: image,
                                 command: ["/bin/sh", "-c"],
-                                args: [`curl ${cfg.genesisURI} > ~/genesis.json; 
-                                bor --datadir /datadir init ~/genesis.json; 
-                                bor --datadir /datadir \
-                                    --port 30303 \
-                                    --http \
-                                    --http.addr 0.0.0.0 \
-                                    --http.vhosts '*' \
-                                    --http.corsdomain '*' \
-                                    --http.port 8545 \
-                                    --http.api 'admin,web3,eth,txpool'`],
+                                args: [shellCmd],
 
                                 ports: publicPorts.map(p => ({
                                     name: p.name,
                                     containerPort: p.port,
-                                    protocol: p.protocol
+                                    protocol: p.protocol,
                                 })),
 
-                                volumeMounts: [{
-                                    mountPath: "/datadir",
-                                    name: "bor-datadir",
-                                }]
+                                volumeMounts: storageNeeds.map(s => ({
+                                    name: s.name,
+                                    mountPath: s.mountPath,
+                                })),
                             }
                         ]
                     }
