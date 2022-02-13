@@ -3,6 +3,10 @@ config:
     chainStorage: 800Gi
     genesisURI: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/bor/genesis.json
     image: maticnetwork/bor:v0.2.14
+  gcloud:heimdall:
+    chainStorage: 800Gi
+    genesisURI: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/without-sentry/heimdall/config/genesis.json
+    image: 0xpolygon/heimdall:0.2.5
   gcloud:k8s:
     initialNodeCount: 2
     machineType: n1-standard-2
