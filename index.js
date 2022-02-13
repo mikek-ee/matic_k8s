@@ -12,7 +12,5 @@ if (config["k8s"]) {
         const bor = require("./k8s/workloads/bor")
         const bornode = bor.createWorkload("bor", clusterProvider)
         exports.bor = bornode
-
-        const bor2 = bor.createWorkload("bor-2", clusterProvider)
     }
 }
