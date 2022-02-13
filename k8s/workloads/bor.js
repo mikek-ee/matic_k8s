@@ -25,14 +25,14 @@ const createWorkload = (name, provider) => {
 
     // Define network reqs
     const publicPorts = [
-        { name: 'bor-peer-udp', port: 30303, protocol: 'UDP' },
-        { name: 'bor-peer-tcp', port: 30303, protocol: 'TCP' },
-        { name: 'bor-rpc-tcp', port: 30303, protocol: 'TCP' },
+        { name: `${name}-peer-udp`, port: 30303, protocol: 'UDP' },
+        { name: `${name}-peer-tcp`, port: 30303, protocol: 'TCP' },
+        { name: `${name}-rpc-tcp`, port: 30303, protocol: 'TCP' },
     ]
 
     // Define storage reqs
     let storageNeeds = [
-        { name: "bor-datadir", storageAmt: cfg.chainStorage, mountPath: "/datadir" }
+        { name: `${name}-datadir`, storageAmt: cfg.chainStorage, mountPath: "/datadir" }
     ]
 
     // Create storage
