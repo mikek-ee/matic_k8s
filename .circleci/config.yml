@@ -12,6 +12,10 @@ jobs:
     working_directory: ~/repo/
     steps:
       - gcp-cli/install
+      - run: |
+          echo $GOOGLE_CREDENTIALS | gcloud auth activate-service-account --key-file=-
+          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}      
       - checkout
       - pulumi/login:
           version: 3.24.1
