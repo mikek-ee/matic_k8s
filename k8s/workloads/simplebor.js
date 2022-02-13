@@ -23,8 +23,10 @@ const createWorkload = (name, provider) => {
     }
 
     const { storageClass, pvClaim } = storage.createStorage({
-        metadata, name, provider,
-        config: { storageAmt: cfg.chainStorage }
+        name,
+        metadata,
+        config: { storageAmt: cfg.chainStorage },
+        provider
     });
 
     const publicPorts = [
@@ -89,10 +91,10 @@ const createWorkload = (name, provider) => {
 
     const services = publicPorts.map(p => {
         return service.createService({
+            name: `${p.name}-svc`,
             metadata,
             config: {
                 appLabels,
-                svcName: `${p.name}-svc`,
                 portName: p.name,
                 port: p.port,
                 protocol: p.protocol,

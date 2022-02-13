@@ -1,7 +1,7 @@
 const k8s = require("@pulumi/kubernetes");
 const pulumi = require("@pulumi/pulumi")
 
-const createStorage = ({ metadata, name, provider, config }) => {
+const createStorage = ({ name, metadata, config, provider }) => {
     // Create auto-provisioning storage class
     const storageClass = new k8s.storage.v1.StorageClass(
         name,

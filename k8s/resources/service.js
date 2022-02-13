@@ -5,12 +5,13 @@ const { provider } = require("@pulumi/pulumi");
 // Currently multiple services = multiple public IPs.
 // TODO: Add DNS registration
 const createService = ({
+    name,
     metadata,
-    config: { appLabels, svcName, portName, port, protocol },
+    config: { appLabels, portName, port, protocol },
     provider }) => {
 
     return new k8s.core.v1.Service(
-        svcName,
+        name,
         {
             metadata,
             spec: {
