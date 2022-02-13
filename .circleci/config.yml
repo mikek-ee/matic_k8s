@@ -11,6 +11,7 @@ jobs:
       - image: 'cimg/node:17.5.0'
     working_directory: ~/repo/
     steps:
+      - gcp-cli/install
       - checkout
       - pulumi/login:
           version: 3.24.1
