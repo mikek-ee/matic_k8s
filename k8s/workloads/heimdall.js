@@ -45,17 +45,8 @@ const createWorkload = (name, provider) => {
     ))
 
     // Create deployment
-
-    // const shellCmd = `curl ${cfg.genesisURI} > ~/genesis.json; 
-    // bor --datadir /datadir init ~/genesis.json; 
-    // bor --datadir /datadir \
-    //     --port 30303 \
-    //     --http \
-    //     --http.addr 0.0.0.0 \
-    //     --http.vhosts '*' \
-    //     --http.corsdomain '*' \
-    //     --http.port 8545 \
-    //     --http.api 'admin,web3,eth,txpool'`
+    // TODO: Create init & launch commands for Heimdall
+    const shellCmd = ``
 
     const dep = deployment.createDeployment({
         name,
