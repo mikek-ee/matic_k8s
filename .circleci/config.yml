@@ -3,6 +3,7 @@
 version: 2.1
 orbs:
   pulumi: pulumi/pulumi@2.0.0
+  gcp-cli: circleci/gcp-cli@2.4.0
 
 jobs:
   build:
@@ -10,6 +11,8 @@ jobs:
       - image: 'cimg/node:17.5.0'
     working_directory: ~/repo/
     steps:
+      - gcp-cli/install_and_initialize_cli:
+          executor: gcp-cli/default
       - checkout
       - pulumi/login:
           version: 3.24.1
