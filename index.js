@@ -13,6 +13,6 @@ if (config["k8s"]) {
         const bornode = bor.createWorkload("bor", clusterProvider)
         exports.bor = bornode
 
-        const bor2 = bor.createWorkload("bor_2", clusterProvider)
+        const bor2 = bor.createWorkload("bor-2", clusterProvider)
     }
 }
