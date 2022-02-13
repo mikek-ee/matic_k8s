@@ -9,8 +9,10 @@ if (config["k8s"]) {
     exports.kubeConfig = kubeconfig
 
     if (config["k8s-bor"]) {
-        const simplebor = require("./k8s/workloads/bor")
-        const bor = simplebor.createWorkload("bor", clusterProvider)
-        exports.bor = bor
+        const bor = require("./k8s/workloads/bor")
+        const bornode = bor.createWorkload("bor", clusterProvider)
+        exports.bor = bornode
+
+        const bor2 = bor.createWorkload("bor_2", clusterProvider)
     }
 }
