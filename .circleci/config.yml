@@ -13,6 +13,9 @@ jobs:
       - checkout
       - pulumi/login:
           version: 3.24.1
+      - run:
+          command: |
+            npm install
       - pulumi/update:
           stack: Mikek_ee/gcloud/dev      
  
