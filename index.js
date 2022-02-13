@@ -49,6 +49,6 @@ if (config["k8s"]) {
     if (config["k8s-bor"]) {
         const simplebor = require("./k8s/workloads/simplebor")
         const bor = simplebor.createWorkload("bor", clusterProvider)
-        exports.bor = bor
+        // exports.bor = bor
     }
 }

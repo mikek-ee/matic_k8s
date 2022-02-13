@@ -2,7 +2,8 @@ const k8s = require("@pulumi/kubernetes");
 const pulumi = require("@pulumi/pulumi")
 
 const storage = require("../resources/storage")
-const service = require("../resources/service")
+const service = require("../resources/service");
+const { PersistentVolumeClaim } = require("@pulumi/kubernetes/core/v1");
 
 // Required config:
 // bor.chainStorage: Size of persistant storage disk (e.g. "200Gi")
@@ -22,19 +23,32 @@ const createWorkload = (name, provider) => {
         labels: appLabels,
     }
 
-    const { storageClass, pvClaim } = storage.createStorage({
-        name,
-        metadata,
-        config: { storageAmt: cfg.chainStorage },
-        provider
-    });
-
+    // Define network reqs
     const publicPorts = [
         { name: 'bor-peer-udp', port: 30303, protocol: 'UDP' },
         { name: 'bor-peer-tcp', port: 30303, protocol: 'TCP' },
         { name: 'bor-rpc-tcp', port: 30303, protocol: 'TCP' },
     ]
 
+    // Define storage reqs
+    let storageNeeds = [
+        { name: "bor-datadir", storageAmt: cfg.chainStorage, mountPath: "/datadir" }
+    ]
+
+    // Create storage
+    storageNeeds = storageNeeds.map(s => (
+        {
+            ...s,
+            ...storage.createStorage({
+                name,
+                metadata,
+                config: { storageAmt: s.storageAmt },
+                provider
+            })
+        }
+    ))
+
+    // Create deployment
     const deployment = new k8s.apps.v1.Deployment(
         name,
         {
@@ -45,14 +59,13 @@ const createWorkload = (name, provider) => {
                 template: {
                     metadata,
                     spec: {
-                        volumes: [
-                            {
-                                name: "bor-datadir",
-                                persistentVolumeClaim: {
-                                    claimName: pvClaim.metadata.apply(m => m.name)
-                                }
+                        volumes: storageNeeds.map(s => ({
+                            name: s.name,
+                            persistentVolumeClaim: {
+                                claimName: s.pvClaim.metadata.apply(m => m.name)
                             }
-                        ],
+                        })),
+
                         containers: [
                             {
                                 name: name,
@@ -72,13 +85,13 @@ const createWorkload = (name, provider) => {
                                 ports: publicPorts.map(p => ({
                                     name: p.name,
                                     containerPort: p.port,
-                                    protocol: p.protocol
+                                    protocol: p.protocol,
                                 })),
 
-                                volumeMounts: [{
-                                    mountPath: "/datadir",
-                                    name: "bor-datadir",
-                                }]
+                                volumeMounts: storageNeeds.map(s => ({
+                                    name: s.name,
+                                    mountPath: s.mountPath,
+                                })),
                             }
                         ]
                     }
@@ -89,6 +102,7 @@ const createWorkload = (name, provider) => {
     )
     const deploymentName = deployment.metadata.apply(m => m.name)
 
+    // Create network svcs
     const services = publicPorts.map(p => {
         return service.createService({
             name: `${p.name}-svc`,
