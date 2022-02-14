@@ -7,23 +7,7 @@ const gcp = require("@pulumi/gcp");
 // initialNodeCount: Initial node qty
 const cfg = new pulumi.Config().requireObject("k8s")
 
-const createCluster = (name = "k8s-cluster") => {
-  const engineVersion = gcp.container.getEngineVersions().then(v => v.latestMasterVersion)
-  const cluster = new gcp.container.Cluster(name, {
-    initialNodeCount: cfg.initialNodeCount,
-    minMasterVersion: engineVersion,
-    nodeVersion: engineVersion,
-    nodeConfig: {
-      machineType: cfg.machineType,
-      oauthScopes: [
-        "https://www.googleapis.com/auth/compute",
-        "https://www.googleapis.com/auth/devstorage.read_only",
-        "https://www.googleapis.com/auth/logging.write",
-        "https://www.googleapis.com/auth/monitoring"]
-    }
-  })
-
-  // TODO: migrate to javascript objects from YAML
+const kubeconfigFromCluster = ({ cluster }) => {
   const kubeconfig = pulumi
     .all([cluster.name, cluster.endpoint, cluster.masterAuth])
     .apply(([name, endpoint, masterAuth]) => {
@@ -54,13 +38,47 @@ users:
       name: gcp`
     });
 
+  return kubeconfig
+}
+
+const getCluster = (name = "k8s-cluster") => {
+  // TODO: getCluster and new Cluster() return different objects, so this doesnt work
+  const cluster = gcp.container.getCluster({ name })
+  const kubeconfig = kubeconfigFromCluster({ cluster })
   const clusterProvider = new k8s.Provider(name, { kubeconfig: kubeconfig })
 
   return {
     cluster,
     clusterProvider,
-    kubeconfig
+    kubeconfig,
+  }
+}
+
+const createCluster = (name = "k8s-cluster") => {
+  const engineVersion = gcp.container.getEngineVersions().then(v => v.latestMasterVersion)
+  const cluster = new gcp.container.Cluster(name, {
+    initialNodeCount: cfg.initialNodeCount,
+    minMasterVersion: engineVersion,
+    nodeVersion: engineVersion,
+    nodeConfig: {
+      machineType: cfg.machineType,
+      oauthScopes: [
+        "https://www.googleapis.com/auth/compute",
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring"]
+    }
+  })
+  const kubeconfig = kubeconfigFromCluster({ cluster })
+
+  const clusterProvider = new k8s.Provider(name, { kubeconfig: kubeconfig })
+
+  return {
+    cluster,
+    clusterProvider,
+    kubeconfig,
   }
 }
 
 exports.createCluster = createCluster
+exports.getCluster = getCluster

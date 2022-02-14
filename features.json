@@ -1,5 +1,5 @@
 {
   "k8s": true,
   "k8s-bor": true,
-  "k8s-heimdall": true
+  "k8s-heimdall": false
 }

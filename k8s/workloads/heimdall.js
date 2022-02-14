@@ -8,7 +8,7 @@ const deployment = require("../resources/deployment")
 // Required config:
 const cfg = new pulumi.Config().requireObject("heimdall")
 
-// Creates a new bor workload on the supplied cluster
+// Creates a new heimdall workload on the supplied cluster
 const createWorkload = (name, provider) => {
 
     // Create namespace & reused metadata
