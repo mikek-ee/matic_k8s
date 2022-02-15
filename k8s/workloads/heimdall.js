@@ -9,7 +9,7 @@ const deployment = require("../resources/deployment")
 const cfg = new pulumi.Config().requireObject("heimdall")
 
 // Creates a new heimdall workload on the supplied cluster
-const createWorkload = (name, provider) => {
+const createWorkload = ({ name, provider }) => {
 
     // Create namespace & reused metadata
     const ns = new k8s.core.v1.Namespace(name, {}, { provider })

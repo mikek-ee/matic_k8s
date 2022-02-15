@@ -10,13 +10,19 @@ if (config["k8s"]) {
 
     if (config["k8s-bor"]) {
         const bor = require("./k8s/workloads/bor")
-        const bornode = bor.createWorkload("bor", clusterProvider)
+        const bornode = bor.createWorkload({
+            name: "bor",
+            provider: clusterProvider
+        })
         // exports.bor = bornode
     }
 
     if (config["k8s-heimdall"]) {
         const heimdall = require("./k8s/workloads/heimdall")
-        const heimdallNode = heimdall.createWorkload("heimdall", clusterProvider)
+        const heimdallNode = heimdall.createWorkload({
+            name: "heimdall",
+            provider: clusterProvider
+        })
         // exports.heimdall = heimdallNode
     }
 }
