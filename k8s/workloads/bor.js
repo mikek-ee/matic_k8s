@@ -27,7 +27,7 @@ const createWorkload = ({ name, provider }) => {
     const publicPorts = [
         { name: `${name}-peer-udp`, port: 30303, protocol: 'UDP' },
         { name: `${name}-peer-tcp`, port: 30303, protocol: 'TCP' },
-        { name: `${name}-rpc-tcp`, port: 30303, protocol: 'TCP' },
+        { name: `${name}-rpc-tcp`, port: 8545, protocol: 'TCP' },
     ]
 
     // Define storage reqs
